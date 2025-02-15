@@ -1,0 +1,23 @@
+package com.jozufozu.flywheel.compat;
+
+import com.jozufozu.flywheel.FlwImplXplat;
+
+import java.util.function.BooleanSupplier;
+
+public enum CompatMods {
+	SODIUM("sodium"),
+	RUBIDIUM("rubidium"),
+	EMBEDDIUM("embeddium"),
+	IRIS("iris"),
+	OCULUS("oculus");
+
+	private final BooleanSupplier isLoaded;
+
+	CompatMods(String modid) {
+		isLoaded = FlwImplXplat.INSTANCE.getModLoaded(modid);
+	}
+
+	public boolean isLoaded() {
+		return isLoaded.getAsBoolean();
+	}
+}
