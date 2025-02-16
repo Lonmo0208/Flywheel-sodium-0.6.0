@@ -15,7 +15,6 @@ public final class ShadersModHandler {
 	public static final String OPTIFINE_ROOT_PACKAGE = "net.optifine";
 	public static final String SHADER_PACKAGE = "net.optifine.shaders";
 
-	private static final boolean isIrisLoaded;
 	private static final boolean isOculusLoaded;
 	private static final boolean isOptifineInstalled;
 	private static final InternalHandler internalHandler;
@@ -23,8 +22,6 @@ public final class ShadersModHandler {
 	static {
 		Package optifinePackage = Package.getPackage(OPTIFINE_ROOT_PACKAGE);
 		isOptifineInstalled = optifinePackage != null;
-		isIrisLoaded = ModList.get()
-				.isLoaded("iris");
 		isOculusLoaded = ModList.get()
 				.isLoaded("oculus");
 
@@ -33,9 +30,9 @@ public final class ShadersModHandler {
 		if (isOptifineInstalled) {
 			Backend.LOGGER.info("Optifine detected.");
 			internalHandler = new Optifine();
-		} else if (isIrisLoaded || isOculusLoaded) {
-			Backend.LOGGER.info("{} detected.", isIrisLoaded ? "Iris" : "Oculus");
-			internalHandler = new Iris();
+		} else if (isOculusLoaded) {
+			Backend.LOGGER.info("Oculus detected.");
+			internalHandler = new Oculus();
 		} else {
 			Backend.LOGGER.info("No shaders mod detected.");
 			internalHandler = new InternalHandler() {};
@@ -76,7 +73,7 @@ public final class ShadersModHandler {
 	}
 
 	// simple, lovely api calls
-	private static class Iris implements InternalHandler {
+	private static class Oculus implements InternalHandler {
 		@Override
 		public boolean isShaderPackInUse() {
 			return IrisApi.getInstance()
