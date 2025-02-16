@@ -1,5 +1,9 @@
 package com.jozufozu.flywheel;
 
+import com.jozufozu.flywheel.compat.EmbeddiumCompat;
+
+import net.minecraftforge.fml.ModList;
+
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.slf4j.Logger;
 
@@ -76,6 +80,9 @@ public class Flywheel {
 		modEventBus.addListener(PartialModel::onModelRegistry);
 		modEventBus.addListener(PartialModel::onModelBake);
 		modEventBus.addListener(StitchedSprite::onTextureStitchPost);
+		if (ModList.get().isLoaded("embeddium")) {
+			EmbeddiumCompat.init();
+		}
 
 		VanillaInstances.init();
 
