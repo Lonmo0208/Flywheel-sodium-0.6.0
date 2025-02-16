@@ -34,7 +34,7 @@ public class InstanceWorld {
 
 	public static InstanceWorld create(LevelAccessor level) {
 		return switch (Backend.getBackendType()) {
-		case INSTANCING -> {
+		case INSTANCING, BATCHING -> {
 			InstancingEngine<WorldProgram> manager = InstancingEngine.builder(Contexts.WORLD)
 					.build();
 
@@ -45,14 +45,7 @@ public class InstanceWorld {
 			manager.addListener(blockEntityInstanceManager);
 			yield new InstanceWorld(manager, entityInstanceManager, blockEntityInstanceManager);
 		}
-		case BATCHING -> {
-			var manager = new BatchingEngine();
-			var entityInstanceManager = new EntityInstanceManager(manager);
-			var blockEntityInstanceManager = new BlockEntityInstanceManager(manager);
-
-			yield new InstanceWorld(manager, entityInstanceManager, blockEntityInstanceManager);
-		}
-		default -> throw new IllegalArgumentException("Unknown engine type");
+			default -> throw new IllegalArgumentException("Unknown engine type");
 		};
 	}
 
