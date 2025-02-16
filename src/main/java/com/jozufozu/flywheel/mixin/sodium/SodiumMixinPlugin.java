@@ -1,44 +1,46 @@
-package com.jozufozu.flywheel.mixin;
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
 
+package com.jozufozu.flywheel.mixin.sodium;
+
+import com.google.common.base.Suppliers;
 import java.util.List;
 import java.util.Set;
-
+import java.util.function.Supplier;
+import net.minecraftforge.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import com.jozufozu.flywheel.compat.CompatMods;
-import com.jozufozu.flywheel.compat.CompatHelper;
-
 public class SodiumMixinPlugin implements IMixinConfigPlugin {
-	@Override
+	private static final Supplier<Boolean> IS_SODIUM_LOADED = Suppliers.memoize(() -> LoadingModList.get().getModFileById("sodium") != null);
+
+	public SodiumMixinPlugin() {
+	}
+
 	public void onLoad(String mixinPackage) {
 	}
 
-	@Override
 	public String getRefMapperConfig() {
 		return null;
 	}
 
-	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return CompatMods.SODIUM.isLoaded() && CompatHelper.IS_SODIUM_0_5;
+		return (Boolean)IS_SODIUM_LOADED.get();
 	}
 
-	@Override
 	public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
 	}
 
-	@Override
 	public List<String> getMixins() {
 		return null;
 	}
 
-	@Override
 	public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
 	}
 
-	@Override
 	public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
 	}
 }

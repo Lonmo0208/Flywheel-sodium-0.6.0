@@ -1,5 +1,9 @@
 package com.jozufozu.flywheel;
 
+import com.jozufozu.flywheel.compat.SodiumCompat;
+
+import net.minecraftforge.fml.ModList;
+
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.slf4j.Logger;
 
