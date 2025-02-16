@@ -1,6 +1,7 @@
 package com.jozufozu.flywheel.mixin;
 
 import javax.annotation.Nullable;
+import com.jozufozu.flywheel.compat.CompatMods;
 
 import com.jozufozu.flywheel.compat.SodiumCompat;
 import com.jozufozu.flywheel.mixin.sodium.SodiumMixinPlugin;
@@ -30,10 +31,10 @@ public class BlockEntityTypeMixin<T extends BlockEntity> implements BlockEntityT
 
 	@Override
 	public void flywheel$setInstancingController(@Nullable BlockEntityInstancingController<? super T> instancingController) {
-		if (SodiumMixinPlugin.IS_SODIUM_LOADED.get() && !SodiumMixinPlugin.IS_EMBEDDIUM_LOADED.get()) {
+		if (SodiumMixinPlugin.IS_SODIUM_LOADED.get() && !SodiumMixinPlugin.IS_EMBEDDIUM_LOADED.get() && SodiumMixinPlugin.IS_SODIUM_0_6) {
 			if (flywheel$instancingController == null && instancingController != null) {
 				flywheel$sodiumPredicate = SodiumCompat.forBlockEntityType((BlockEntityType<?>) (Object) this);
-			} else if (flywheel$instancingController != null && instancingController == null) {
+			} else if (flywheel$instancingController != null && instancingController == null && flywheel$sodiumPredicate != null) {
 				SodiumCompat.removePredicate((BlockEntityType<?>) (Object) this, flywheel$sodiumPredicate);
 			}
 		}
