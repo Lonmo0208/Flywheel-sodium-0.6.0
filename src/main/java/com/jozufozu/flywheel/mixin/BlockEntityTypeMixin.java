@@ -2,6 +2,7 @@ package com.jozufozu.flywheel.mixin;
 
 import javax.annotation.Nullable;
 
+import com.jozufozu.flywheel.compat.SodiumCompat;
 import com.jozufozu.flywheel.mixin.sodium.SodiumMixinPlugin;
 
 import org.spongepowered.asm.mixin.Mixin;
