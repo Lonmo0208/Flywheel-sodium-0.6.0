@@ -2,8 +2,6 @@ package com.jozufozu.flywheel.mixin;
 
 import javax.annotation.Nullable;
 
-import com.jozufozu.flywheel.compat.CompatMods;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -17,9 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 public class BlockEntityTypeMixin<T extends BlockEntity> implements BlockEntityTypeExtension<T> {
 	@Unique
 	private BlockEntityInstancingController<? super T> flywheel$instancingController;
-
-	public BlockEntityTypeMixin() {
-	}
 
 	@Override
 	@Nullable
