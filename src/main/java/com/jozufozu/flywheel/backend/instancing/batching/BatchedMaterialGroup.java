@@ -3,6 +3,8 @@ package com.jozufozu.flywheel.backend.instancing.batching;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jozufozu.flywheel.api.struct.Batched;
+
 import org.joml.Matrix4f;
 
 import com.jozufozu.flywheel.api.InstanceData;
@@ -47,7 +49,9 @@ public class BatchedMaterialGroup<P extends WorldProgram> implements MaterialGro
 	@Override
 	public <D extends InstanceData> BatchedMaterial<D> material(StructType<D> type) {
 		if (type instanceof Instanced<D> instanced) {
-			return (BatchedMaterial<D>) materials.computeIfAbsent(instanced, BatchedMaterial::new);
+			return (BatchedMaterial<D>) materials.computeIfAbsent(instanced, k ->
+					new BatchedMaterial<>((Batched<D>) k, k)
+			);
 		} else {
 			throw new ClassCastException("Cannot use type '" + type + "' with CPU instancing.");
 		}

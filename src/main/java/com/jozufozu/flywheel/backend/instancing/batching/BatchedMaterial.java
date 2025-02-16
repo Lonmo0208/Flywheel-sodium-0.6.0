@@ -25,9 +25,9 @@ public class BatchedMaterial<D extends InstanceData> implements Material<D> {
 	protected final Instanced<D> type;
 	protected final List<CPUInstancer<D>> uninitialized = new ArrayList<>();
 
-	public BatchedMaterial(Batched<D> type, Instanced<D> type1) {
+	public BatchedMaterial(Batched<D> type, Instanced<? extends InstanceData> type1) {
 		this.type1 = type;
-		this.type = type1;
+		this.type = (Instanced<D>) type1;
 		this.models = new HashMap<>();
 	}
 
