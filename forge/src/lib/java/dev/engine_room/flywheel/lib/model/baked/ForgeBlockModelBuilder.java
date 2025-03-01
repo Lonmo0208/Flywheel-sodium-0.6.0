@@ -1,6 +1,7 @@
 package dev.engine_room.flywheel.lib.model.baked;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -12,38 +13,39 @@ import dev.engine_room.flywheel.api.model.Model;
 import dev.engine_room.flywheel.lib.model.ModelUtil;
 import dev.engine_room.flywheel.lib.model.SimpleModel;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.client.model.data.ModelData;
 
 public final class ForgeBlockModelBuilder extends BlockModelBuilder {
 	@Nullable
-	private ModelData modelData;
+	private Function<BlockPos, ModelData> modelDataLookup;
 
-	public ForgeBlockModelBuilder(BlockState state) {
-		super(state);
+	public ForgeBlockModelBuilder(BlockAndTintGetter level, Iterable<BlockPos> positions) {
+		super(level, positions);
 	}
 
 	@Override
-	public ForgeBlockModelBuilder level(BlockAndTintGetter level) {
-		super.level(level);
-		return this;
-	}
-
-	@Override
-	public ForgeBlockModelBuilder poseStack(PoseStack poseStack) {
+	public ForgeBlockModelBuilder poseStack(@Nullable PoseStack poseStack) {
 		super.poseStack(poseStack);
 		return this;
 	}
 
 	@Override
-	public ForgeBlockModelBuilder materialFunc(BiFunction<RenderType, Boolean, Material> materialFunc) {
+	public ForgeBlockModelBuilder renderFluids(boolean renderFluids) {
+		super.renderFluids(renderFluids);
+		return this;
+	}
+
+	@Override
+	public ForgeBlockModelBuilder materialFunc(@Nullable BiFunction<RenderType, Boolean, Material> materialFunc) {
 		super.materialFunc(materialFunc);
 		return this;
 	}
 
-	public ForgeBlockModelBuilder modelData(ModelData modelData) {
-		this.modelData = modelData;
+	public ForgeBlockModelBuilder modelDataLookup(@Nullable Function<BlockPos, ModelData> modelDataLookup) {
+		this.modelDataLookup = modelDataLookup;
 		return this;
 	}
 
@@ -52,16 +54,19 @@ public final class ForgeBlockModelBuilder extends BlockModelBuilder {
 		if (materialFunc == null) {
 			materialFunc = ModelUtil::getMaterial;
 		}
-		if (modelData == null) {
-			modelData = ModelData.EMPTY;
+		if (modelDataLookup == null) {
+			modelDataLookup = pos -> {
+				BlockEntity blockEntity = level.getBlockEntity(pos);
+				return blockEntity != null ? blockEntity.getModelData() : ModelData.EMPTY;
+			};
 		}
 
 		var builder = ChunkLayerSortedListBuilder.<Model.ConfiguredMesh>getThreadLocal();
 
-		BakedModelBufferer.bufferBlock(level, state, poseStack, modelData, (renderType, shaded, data) -> {
+		BakedModelBufferer.bufferBlocks(positions.iterator(), level, poseStack, modelDataLookup, renderFluids, (renderType, shaded, data) -> {
 			Material material = materialFunc.apply(renderType, shaded);
 			if (material != null) {
-				Mesh mesh = MeshHelper.blockVerticesToMesh(data, "source=BlockModelBuilder," + "blockState=" + state + ",renderType=" + renderType + ",shaded=" + shaded);
+				Mesh mesh = MeshHelper.blockVerticesToMesh(data, "source=BlockModelBuilder," + "renderType=" + renderType + ",shaded=" + shaded);
 				builder.add(renderType, new Model.ConfiguredMesh(material, mesh));
 			}
 		});

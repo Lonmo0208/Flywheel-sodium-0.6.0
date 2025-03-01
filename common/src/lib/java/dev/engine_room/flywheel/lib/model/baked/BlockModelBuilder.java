@@ -11,38 +11,39 @@ import dev.engine_room.flywheel.api.material.Material;
 import dev.engine_room.flywheel.lib.internal.FlwLibXplat;
 import dev.engine_room.flywheel.lib.model.SimpleModel;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
 
 @ApiStatus.NonExtendable
 public abstract class BlockModelBuilder {
-	final BlockState state;
-	@Nullable
-	BlockAndTintGetter level;
+	final BlockAndTintGetter level;
+	final Iterable<BlockPos> positions;
 	@Nullable
 	PoseStack poseStack;
+	boolean renderFluids = false;
 	@Nullable
 	BiFunction<RenderType, Boolean, Material> materialFunc;
 
-	BlockModelBuilder(BlockState state) {
-		this.state = state;
-	}
-
-	public static BlockModelBuilder create(BlockState state) {
-		return FlwLibXplat.INSTANCE.createBlockModelBuilder(state);
-	}
-
-	public BlockModelBuilder level(BlockAndTintGetter level) {
+	BlockModelBuilder(BlockAndTintGetter level, Iterable<BlockPos> positions) {
 		this.level = level;
-		return this;
+		this.positions = positions;
 	}
 
-	public BlockModelBuilder poseStack(PoseStack poseStack) {
+	public static BlockModelBuilder create(BlockAndTintGetter level, Iterable<BlockPos> positions) {
+		return FlwLibXplat.INSTANCE.createBlockModelBuilder(level, positions);
+	}
+
+	public BlockModelBuilder poseStack(@Nullable PoseStack poseStack) {
 		this.poseStack = poseStack;
 		return this;
 	}
 
-	public BlockModelBuilder materialFunc(BiFunction<RenderType, Boolean, Material> materialFunc) {
+	public BlockModelBuilder renderFluids(boolean renderFluids) {
+		this.renderFluids = renderFluids;
+		return this;
+	}
+
+	public BlockModelBuilder materialFunc(@Nullable BiFunction<RenderType, Boolean, Material> materialFunc) {
 		this.materialFunc = materialFunc;
 		return this;
 	}
